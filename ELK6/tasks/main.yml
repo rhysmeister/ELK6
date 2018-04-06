@@ -24,6 +24,14 @@
     with_items:
       - "{{ elk_packages }}"
 
+  - name: Ensure kibana is correctly configured
+    lineinfile:
+      path: /etc/kibana/kibana.yml
+      regexp: "^{{ item }}"
+      line: "{{ item }}"
+    with_items:
+      - "{{ kibana_config }}"
+
   - name: Ensure ELK services are set to auto-start and running
     service:
       name: "{{ item }}"

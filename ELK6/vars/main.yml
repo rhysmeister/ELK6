@@ -9,3 +9,5 @@ additional_packages:
   - curl
   - wget
   - net-tools
+kibana_config:
+  - 'server.host: "0.0.0.0"'
