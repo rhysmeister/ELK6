@@ -1,0 +1,6 @@
+---
+# handlers file for ELK6
+  - name: yum-clean-metadata
+    command: yum clean metadata
+    args:
+      warn: no

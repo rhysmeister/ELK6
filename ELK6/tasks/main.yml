@@ -1,0 +1,33 @@
+---
+# tasks file for ELK6
+  - name: Ensure ELK yum repo exists
+    yum_repository:
+      description: Elasticsearch repository for 6.x packages
+      name: ELK6
+      baseurl: https://artifacts.elastic.co/packages/6.x/yum
+      gpgcheck: yes
+      gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      enabled: yes
+    notify: yum-clean-metadata
+
+  - name: Ensure additional packages are installed
+    yum:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - "{{ additional_packages }}"
+
+  - name: Install ELK packages
+    yum:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - "{{ elk_packages }}"
+
+  - name: Ensure ELK services are set to auto-start and running
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: yes
+    with_items:
+      - "{{ elk_packages }}"

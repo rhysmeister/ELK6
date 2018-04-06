@@ -1,0 +1,11 @@
+---
+# vars file for ELK6
+elk_packages:
+  - elasticsearch
+  - kibana
+  - logstash
+additional_packages:
+  - java-1.8.0-openjdk
+  - curl
+  - wget
+  - net-tools
