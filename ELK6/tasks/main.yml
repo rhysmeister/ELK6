@@ -8,7 +8,22 @@
       gpgcheck: yes
       gpgkey: https://artifacts.elastic.co/GPG-KEY-elasticsearch
       enabled: yes
-    notify: yum-clean-metadata
+    register: elk
+
+  - name: Ensure epel-release is installed
+    yum:
+      name: epel-release
+      state: installed
+    register: epel
+
+  - name: Clean yum cache if needed
+    command: yum clean metadata
+    when: epel.changed == True or elk.changed == True
+
+  - name: ENsure node.js repo is setup
+    shell: curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash - && touch /home/vagrant/nodejs.success
+    args:
+      creates: /home/vagrant/nodejs.success
 
   - name: Ensure additional packages are installed
     yum:
@@ -39,3 +54,13 @@
       enabled: yes
     with_items:
       - "{{ elk_packages }}"
+
+  - name: Git clone the elasticsearch head
+    git:
+      repo: git://github.com/mobz/elasticsearch-head.git
+      dest: /home/vagrant/elasticsearch-head
+    become: no
+
+  - name: Start elasticsearch-head
+    shell: cd /home/vagrant/elasticsearch-head && npm install && npm run start &
+    become: no
